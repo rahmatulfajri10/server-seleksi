@@ -25,6 +25,17 @@ model tbl_user{
   password String
   kd_role Int
   role tbl_role @relation(fields: [kd_role], references: [kd_role])
+  tbl_nonparticipants tbl_nonparticipant[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model tbl_nonparticipant{
+  id Int @id @default(autoincrement())
+  username String
+  username_nonparticipant tbl_user @relation(fields: [username], references: [username])
+  nama String
+  ket_jabatan String
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
