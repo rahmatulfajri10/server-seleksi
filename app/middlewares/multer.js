@@ -1,8 +1,17 @@
 const multer = require('multer');
 
-const storage = multer.diskStorage({
+const storageParticipant = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/uploads/');
+    cb(null, 'public/uploads/participant/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Math.floor(Math.random() * 99999999) + '-' + file.originalname);
+  },
+});
+
+const storageSoal = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/uploads/Soal');
   },
   filename: function (req, file, cb) {
     cb(null, Math.floor(Math.random() * 99999999) + '-' + file.originalname);
@@ -27,12 +36,21 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const uploadMiddleware = multer({
-  storage,
+const uploadMiddlewareSoal = multer({
+  storageSoal,
   limits: {
     fileSize: 3000000,
   },
   fileFilter: fileFilter,
 });
 
-module.exports = uploadMiddleware;
+const uploadMiddlewareParticipant = multer({
+  storageParticipant,
+  limits: {
+    fileSize: 3000000,
+  },
+  fileFilter: fileFilter,
+});
+
+module.exports = {
+  uploadMiddlewareSoal, uploadMiddlewareParticipant};

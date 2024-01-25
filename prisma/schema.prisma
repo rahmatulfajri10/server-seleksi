@@ -26,6 +26,7 @@ model tbl_user{
   kd_role Int
   role tbl_role @relation(fields: [kd_role], references: [kd_role])
   tbl_nonparticipants tbl_nonparticipant[]
+  tbl_participants tbl_participant[]
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -36,6 +37,18 @@ model tbl_nonparticipant{
   username_nonparticipant tbl_user @relation(fields: [username], references: [username])
   nama String
   ket_jabatan String
+  createdAt DateTime @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model tbl_participant{
+  id Int @id @default(autoincrement())
+  username String
+  username_participant tbl_user @relation(fields: [username], references: [username])
+  nama String
+  nik String
+  no_pendaftaran String
+  url_foto String
   createdAt DateTime @default(now())
   updatedAt DateTime? @updatedAt
 }
