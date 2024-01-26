@@ -11,7 +11,7 @@ const storageParticipant = multer.diskStorage({
 
 const storageSoal = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/uploads/Soal');
+    cb(null, 'public/uploads/soal');
   },
   filename: function (req, file, cb) {
     cb(null, Math.floor(Math.random() * 99999999) + '-' + file.originalname);
@@ -45,12 +45,16 @@ const uploadMiddlewareSoal = multer({
 });
 
 const uploadMiddlewareParticipant = multer({
-  storageParticipant,
+  storage: storageParticipant,
   limits: {
     fileSize: 3000000,
   },
   fileFilter: fileFilter,
+  
+  
 });
 
 module.exports = {
-  uploadMiddlewareSoal, uploadMiddlewareParticipant};
+  uploadMiddlewareParticipant,
+  uploadMiddlewareSoal,
+};
