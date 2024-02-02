@@ -5,9 +5,9 @@ const {createUser, getAllUser} = require('../../../services/prisma/user');
 
 const create = async (req, res, next) => {
     try{
-        const { username, password, confirmPassword,ur_role } = req.body;
+        const { username, password, confirmPassword} = req.body;
         // Validasi data menggunakan Joi
-        const { error } = validateUser({ username: username, password: password,ur_role: ur_role });
+        const { error } = validateUser({ username: username, password: password});
         if (error) {
             throw new BadRequestError(error.details[0].message);
         }

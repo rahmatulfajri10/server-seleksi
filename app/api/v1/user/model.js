@@ -14,12 +14,7 @@ const validateUser = (data) => {
       'string.empty': 'Password tidak boleh kosong',
       'any.required': 'Password harus diisi',
     }),
-    ur_role: Joi.string().min(3).max(50).required().messages({
-        'string.min': 'Role minimal 3 karakter',
-        'string.max': 'Role maksimal 50 karakter',
-        'string.empty': 'Role tidak boleh kosong',
-        'any.required': 'Role harus diisi',
-      }),
+
 
   });
 
