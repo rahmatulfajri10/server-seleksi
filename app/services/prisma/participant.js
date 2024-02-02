@@ -2,49 +2,62 @@ const prisma = require('../../db/index')
 const { BadRequestError } = require('../../errors')
 
 const getAllParticipant = async () => {
-    const result = await prisma.tbl_participant.findMany()
-    return result
+    const result = await prisma.$queryRaw`
+    SELECT u.username, p.*
+    FROM tbl_participant AS p
+    INNER JOIN tbl_user AS u ON p.id_user = u.id
+    `
+    
+    
+    return result;
 }
 
 const createParticipant = async (req) => {
-    const { username, nama, nik, no_pendaftaran } = req.body;
-    const checkUsername = await prisma.tbl_user.findFirst({
+    const { id_user, nama, nik, no_pendaftaran, email} = req.body;
+    const id = parseInt(id_user);
+    const user = await prisma.tbl_user.findFirst({
         where: {
-            username: username,
+            id: id,
         },
+        select: {
+            username: true
+        }
     });
-    if (!checkUsername) throw new BadRequestError('Username tersebut tidak ada di database');
     const check = await prisma.tbl_participant.findFirst({
         where: {
-            username: username,
+            id_user: id,
         },
     });
-    console.log(req.file)
-    if (!check) {
+    if (check) throw new BadRequestError('Data sudah ada');
+    else{
         const result = await prisma.tbl_participant.create({
             data: {
-                username: username,
+            
+                id_user: id,
                 nama: nama,
                 nik: nik,
                 no_pendaftaran: no_pendaftaran,
+                email: email,
                 url_foto: req.file
                 ? `uploads/participant/${req.file.filename}`
                 : "uploads/avatar/default.jpeg",
             },
             select: {
-                id: true,
-                username: true,
+                username: user.username,
                 nama: true,
                 nik: true,
                 no_pendaftaran: true,
                 url_foto: true,
             },
         });
-        return result;
-    }else{
-        throw new BadRequestError('Username tersebut sudah ada di database');
+
     }
     
+    const participantsWithUsername = {
+        ...result,
+        username: user.username,
+    }
+    return participantsWithUsername;
 }
 
 module.exports = { getAllParticipant, createParticipant }

@@ -5,11 +5,10 @@ const { getAllParticipant, createParticipant } = require('../../../services/pris
 
 const create = async (req, res, next) => {
     try{
-        console.log(req.file)
-        const {  nama, nik, no_pendaftaran } = req.body;
+        const {  nama, nik, no_pendaftaran, email } = req.body;
         
         // Validasi data menggunakan Joi
-        const { error } = validateUser({ nama:nama, nik: nik,no_pendaftaran: no_pendaftaran});
+        const { error } = validateUser({ nama:nama, nik: nik,no_pendaftaran: no_pendaftaran, email: email});
         if (error) {
             throw new BadRequestError(error.details[0].message);
         }

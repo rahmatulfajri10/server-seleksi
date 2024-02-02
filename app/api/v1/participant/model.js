@@ -20,6 +20,11 @@ const validateUser = (data) => {
       'string.empty': 'No Pendaftaran tidak boleh kosong',
       'any.required': 'No Pendaftaran harus diisi',
     }),
+    email: Joi.string().email().required().messages({
+      'string.email': 'Email tidak valid',
+      'string.empty': 'Email tidak boleh kosong',
+      'any.required': 'Email harus diisi',
+    }),
   });
 
   return schema.validate(data);
