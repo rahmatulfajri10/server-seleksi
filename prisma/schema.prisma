@@ -10,78 +10,142 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model tbl_role{
-  id Int @id @default(autoincrement())
-  ur_role String
+model tbl_role {
+  id             Int             @id @default(autoincrement())
+  ur_role        String
   tbl_user_roles tbl_user_role[]
   tbl_privileges tbl_privilage[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?       @updatedAt
 }
 
-model tbl_user{
-  id Int @id @default(autoincrement())
-  username String @unique
-  password String
-  active Int @default(1)
-  tbl_user_roles tbl_user_role[]
+model tbl_user {
+  id               Int               @id @default(autoincrement())
+  username         String            @unique
+  password         String
+  active           Int               @default(1)
+  tbl_answers      tbl_answer[]
+  tbl_user_roles   tbl_user_role[]
   tbl_participants tbl_participant[]
-  tbl_logs tbl_log[]
-  createdAt DateTime @default(now())
+  tbl_logs         tbl_log[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime?         @updatedAt
+}
+
+model tbl_user_role {
+  id        Int       @id @default(autoincrement())
+  id_user   Int
+  id_role   Int
+  user_role tbl_role  @relation(fields: [id_role], references: [id])
+  user      tbl_user  @relation(fields: [id_user], references: [id])
+  createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
 
-model tbl_user_role{
-  id Int @id @default(autoincrement())
-  id_user Int
-  id_role Int
-  user_role tbl_role @relation(fields:[id_role], references:[id])
-  user tbl_user @relation(fields:[id_user], references:[id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime? @updatedAt
+model tbl_privilage {
+  id             Int       @id @default(autoincrement())
+  id_role        Int
+  menu           Int
+  c              Int       @default(0)
+  r              Int       @default(0)
+  u              Int       @default(0)
+  d              Int       @default(0)
+  privilage_role tbl_role  @relation(fields: [id_role], references: [id])
+  privilage_menu tbl_menu  @relation(fields: [menu], references: [id])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime? @updatedAt
 }
 
-model tbl_privilage{
-  id Int @id @default(autoincrement())
-  id_role Int
-  menu Int
-  c Int @default(0)
-  r Int @default(0)
-  u Int @default(0)
-  d Int @default(0)
-  privilage_role tbl_role @relation(fields:[id_role] , references:[id])
-  privilage_menu tbl_menu @relation(fields:[menu], references:[id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime? @updatedAt
-}
-
-model tbl_menu{
-  id Int @id @default(autoincrement())
-  nama String
-  url String
-  parent Int @default(0)
+model tbl_menu {
+  id             Int             @id @default(autoincrement())
+  nama           String
+  url            String
+  parent         Int             @default(0)
   tbl_privileges tbl_privilage[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?       @updatedAt
 }
 
-model tbl_participant{
-  id Int @id @default(autoincrement())
-  id_user Int
-  participant_user tbl_user @relation(fields:[id_user], references:[id])
-  nik String
-  no_pendaftaran String
-  nama String
-  url_foto String
-  email String
-  createdAt DateTime @default(now())
-  updatedAt DateTime? @updatedAt
+model tbl_participant {
+  id               Int       @id @default(autoincrement())
+  id_user          Int
+  participant_user tbl_user  @relation(fields: [id_user], references: [id])
+  nik              String
+  no_pendaftaran   String
+  nama             String
+  url_foto         String
+  email            String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime? @updatedAt
 }
 
-model tbl_log{
-  id Int @id @default(autoincrement())
-  log_time DateTime @default(now())
+model tbl_log {
+  id        Int      @id @default(autoincrement())
+  log_time  DateTime @default(now())
   log_event String
-  id_user Int
-  log_user tbl_user @relation(fields:[id_user], references:[id])
+  id_user   Int
+  log_user  tbl_user @relation(fields: [id_user], references: [id])
+}
+
+model tbl_tipe_soal {
+  id        Int        @id @default(autoincrement())
+  tipe_soal String
+  tbl_exams tbl_exam[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @updatedAt
+}
+
+model tbl_exam {
+  id             Int            @id @default(autoincrement())
+  kd_soal        String         @unique
+  tbl_questions  tbl_question[]
+  nama           String
+  desc           String?
+  start_time     DateTime
+  end_time       DateTime
+  max_score      Int
+  min_pass_score Int
+  duration       Int
+  tipe_soal      Int
+  tipe           tbl_tipe_soal  @relation(fields: [tipe_soal], references: [id])
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime?      @updatedAt
+  tbl_answer     tbl_answer[]
+}
+
+model tbl_question {
+  id          Int          @id @default(autoincrement())
+  tbl_options tbl_option[]
+  kd_soal     String
+  kode        tbl_exam     @relation(fields: [kd_soal], references: [kd_soal])
+  soal        String
+  has_foto    Int          @default(0)
+  url_foto    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime?    @updatedAt
+  tbl_answer  tbl_answer[]
+}
+
+model tbl_option {
+  id          Int          @id @default(autoincrement())
+  id_question Int
+  quest       tbl_question @relation(fields: [id_question], references: [id])
+  option      String
+  scroe       Int
+  has_foto    Int          @default(0)
+  url_foto    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime?    @updatedAt
+}
+
+model tbl_answer {
+  id            Int          @id @default(autoincrement())
+  id_user       Int
+  user          tbl_user     @relation(fields: [id_user], references: [id])
+  kd_soal       String
+  kode_answer   tbl_exam     @relation(fields: [kd_soal], references: [kd_soal])
+  id_question   Int
+  quest         tbl_question @relation(fields: [id_question], references: [id])
+  user_response String
+  response_time DateTime     @default(now())
 }
