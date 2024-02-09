@@ -6,7 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
-    "@prisma/client": "^5.8.1",
+    "@prisma/client": "^5.9.1",
     "axios": "^1.6.5",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
@@ -30,6 +30,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.3",
-    "prisma": "^5.8.1"
+    "prisma": "^5.9.1"
   }
 }

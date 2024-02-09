@@ -30,6 +30,7 @@ model tbl_user {
   tbl_logs         tbl_log[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime?         @updatedAt
+  tbl_result       tbl_result[]
 }
 
 model tbl_user_role {
@@ -111,6 +112,7 @@ model tbl_exam {
   createdAt      DateTime       @default(now())
   updatedAt      DateTime?      @updatedAt
   tbl_answer     tbl_answer[]
+  tbl_result     tbl_result[]
 }
 
 model tbl_question {
@@ -131,7 +133,7 @@ model tbl_option {
   id_question Int
   quest       tbl_question @relation(fields: [id_question], references: [id])
   option      String
-  scroe       Int
+  score       Int
   has_foto    Int          @default(0)
   url_foto    String?
   createdAt   DateTime     @default(now())
@@ -148,4 +150,13 @@ model tbl_answer {
   quest         tbl_question @relation(fields: [id_question], references: [id])
   user_response String
   response_time DateTime     @default(now())
+}
+
+model tbl_result {
+  id          Int      @id @default(autoincrement())
+  id_user     Int
+  user        tbl_user @relation(fields: [id_user], references: [id])
+  kd_soal     String
+  kode_answer tbl_exam @relation(fields: [kd_soal], references: [kd_soal])
+  score       Int      @default(0)
 }
