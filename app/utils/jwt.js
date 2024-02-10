@@ -20,7 +20,6 @@ const createRefreshJWT = ({ payload }) => {
 };
 
 const isTokenValid = ({ token }) => jwt.verify(token, jwtSecret);
-const isQrCodeValid = ({ url }) => jwt.verify(url, jwtSecret);
 const isTokenValidRefreshToken = ({ token }) =>
   jwt.verify(token, jwtRefreshTokenSecret);
 
@@ -29,5 +28,4 @@ module.exports = {
   isTokenValid,
   createRefreshJWT,
   isTokenValidRefreshToken,
-  isQrCodeValid,
 };

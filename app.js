@@ -31,6 +31,7 @@ app.get('/', (req, res) => {
   res.status(200).json({ message: 'Welcome To API SELEKSI_ONLINE_KADET_MAHASISWA' });
 });
 
+
 app.use(v1, userRouter)
 app.use(v1, authRouter);
 app.use(v1, roleRouter);

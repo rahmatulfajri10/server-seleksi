@@ -27,7 +27,6 @@ model tbl_user {
   tbl_answers      tbl_answer[]
   tbl_user_roles   tbl_user_role[]
   tbl_participants tbl_participant[]
-  tbl_logs         tbl_log[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime?         @updatedAt
   tbl_result       tbl_result[]
@@ -84,8 +83,7 @@ model tbl_log {
   id        Int      @id @default(autoincrement())
   log_time  DateTime @default(now())
   log_event String
-  id_user   Int
-  log_user  tbl_user @relation(fields: [id_user], references: [id])
+  username  String
 }
 
 model tbl_tipe_soal {

@@ -2,12 +2,10 @@ const {
     createJWT,
     isTokenValid,
     createRefreshJWT,
-    isTokenValidRefreshToken,
-    isQrCodeValid
+    isTokenValidRefreshToken
   } = require('./jwt');
 const {
   createTokenUser,
-  createQrcodePers,
 } = require('./createTokenUser');
 
 
@@ -17,6 +15,4 @@ module.exports = {
   isTokenValid,
   createTokenUser,
   isTokenValidRefreshToken,
-  isQrCodeValid,
-  createQrcodePers,
 };
