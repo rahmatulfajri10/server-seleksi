@@ -10,11 +10,31 @@ const signin = async (req) => {
         where: {
             username: username,
         },
+        select: {
+            id: true,
+            username: true,
+            password: true,
+            active: true,
+            tbl_user_roles: {
+                select: {
+                    id_role: true,
+                }
+            }
+        },
+        
     });
+    const modifiedUser = {
+        id: user.id,
+        username: user.username,
+        active: user.active,
+        role: user.tbl_user_roles.map(role => role.id_role)
+    }
+    
     if (!user) throw new NotFoundError("Invalid username or password");
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) throw new NotFoundError("Invalid username or password");
-    const token = createJWT(createTokenUser(user));
+    const token = createJWT(createTokenUser(modifiedUser));
+    
     return token;
 }
 

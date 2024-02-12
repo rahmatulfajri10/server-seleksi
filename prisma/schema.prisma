@@ -59,7 +59,6 @@ model tbl_privilage {
 model tbl_menu {
   id             Int             @id @default(autoincrement())
   nama           String
-  url            String
   parent         Int             @default(0)
   tbl_privileges tbl_privilage[]
   createdAt      DateTime        @default(now())
@@ -87,11 +86,11 @@ model tbl_log {
 }
 
 model tbl_tipe_soal {
-  id        Int        @id @default(autoincrement())
-  tipe_soal String
-  tbl_exams tbl_exam[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime?  @updatedAt
+  id           Int            @id @default(autoincrement())
+  tipe_soal    String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime?      @updatedAt
+  tbl_question tbl_question[]
 }
 
 model tbl_exam {
@@ -105,8 +104,6 @@ model tbl_exam {
   max_score      Int
   min_pass_score Int
   duration       Int
-  tipe_soal      Int
-  tipe           tbl_tipe_soal  @relation(fields: [tipe_soal], references: [id])
   createdAt      DateTime       @default(now())
   updatedAt      DateTime?      @updatedAt
   tbl_answer     tbl_answer[]
@@ -114,16 +111,18 @@ model tbl_exam {
 }
 
 model tbl_question {
-  id          Int          @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   tbl_options tbl_option[]
   kd_soal     String
-  kode        tbl_exam     @relation(fields: [kd_soal], references: [kd_soal])
+  kode        tbl_exam      @relation(fields: [kd_soal], references: [kd_soal])
   soal        String
-  has_foto    Int          @default(0)
+  has_foto    Int           @default(0)
   url_foto    String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime?    @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?     @updatedAt
   tbl_answer  tbl_answer[]
+  tipe_soal   Int
+  tipe        tbl_tipe_soal @relation(fields: [tipe_soal], references: [id])
 }
 
 model tbl_option {

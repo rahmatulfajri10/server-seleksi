@@ -13,6 +13,7 @@ const userRouter = require('./app/api/v1/user/router');
 const authRouter = require('./app/api/v1/auth/router');
 const roleRouter = require('./app/api/v1/role/router');
 const participantRouter = require('./app/api/v1/participant/router');
+const tipesoalRouter = require('./app/api/v1/tipe-soal/router');
 
 const v1 = '/api/v1/cms'
 
@@ -36,6 +37,7 @@ app.use(v1, userRouter)
 app.use(v1, authRouter);
 app.use(v1, roleRouter);
 app.use(v1, participantRouter);
+app.use(v1, tipesoalRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

@@ -1,7 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError } = require('../../../errors');
 const validateUser = require('./model');
-const {createUser, getAllUser} = require('../../../services/prisma/user');
+const {createUser, getAllUser, addRoleUser} = require('../../../services/prisma/user');
 
 const create = async (req, res, next) => {
     try{
@@ -37,8 +37,23 @@ const index = async (req, res, next) => {
     }
 }
 
+const addRole = async (req, res, next) => {
+    try{
+        const { username, role } = req.body;
+        const result = await addRoleUser(req);
+        res.status(StatusCodes.ACCEPTED).json({
+            status: 'success',
+            data: result,
+        });
+    }
+    catch(err){
+        next(err);
+    }
+}
+
 module.exports = {
     create,
-    index
+    index,
+    addRole
 };
 

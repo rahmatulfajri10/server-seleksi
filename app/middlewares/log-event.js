@@ -1,16 +1,16 @@
 const jwt = require('jsonwebtoken');
 const {
-  jwtSecret,
-  jwtExpiration,
-  jwtRefreshTokenSecret,
-  jwtRefreshTokenExpiration,
+    jwtSecret,
 } = require('../config');
-const prisma = require('../db/index')
+const prisma = require('../db/index');
+const { isTokenValid } = require('../utils');
+const { UnauthenticatedError } = require('../errors');
 
 const extractUserInfo = (req, res, next) => {
     const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
     if (token) {
         try {
+            
             // Verifikasi token dan dapatkan payload
             const decoded = jwt.verify(token, jwtSecret); // Ganti 'secret-key' dengan kunci rahasia JWT Anda
             // Disimpan dalam objek user dalam req untuk digunakan di middleware selanjutnya
@@ -26,10 +26,17 @@ const extractUserInfo = (req, res, next) => {
 
 const logEvent = async (req, res, next) => {
     try {
+        const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+        if (!token) {
+            throw new UnauthenticatedError('Authentication invalid');
+        }
+        if (token)  {
+            isTokenValid({token})
+        }
+        
         // Ambil informasi pengguna dari objek req
         const username  = req.body.username ? req.body.username : req?.user?.username;
-        const eventType = req.method + ' ' + req.originalUrl;
-        // Simpan log event ke dalam database menggunakan Prisma
+        const eventType = req.ip + ' ' + req.method + ' ' + req.originalUrl;
         await prisma.tbl_log.create({
             data: {
                 username: username,

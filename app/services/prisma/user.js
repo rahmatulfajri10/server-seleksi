@@ -18,6 +18,7 @@ const createUser = async (req) => {
             password: hashedPassword,
         },
         select: {
+            id: true,
             username: true,
             active: true
         },
@@ -28,8 +29,47 @@ const createUser = async (req) => {
 const getAllUser = async () => {
     const result = await prisma.tbl_user.findMany({
         select: {
+            id: true,
             username: true,
-            active: true
+            active: true,
+            tbl_user_roles: {
+                select: {
+                    id_role: true,
+                }
+            }
+        },
+    });
+
+    const modifiedResult = result.map(user => ({
+        id: user.id,
+        username: user.username,
+        active: user.active,
+        role: user.tbl_user_roles.map(role => role.id_role)
+    }));
+    return modifiedResult;
+}
+
+const addRoleUser = async (req) => {
+    const { username, role } = req.body;
+    const user = await prisma.tbl_user.findFirst({
+        where: {
+            username: username,
+        },
+    });
+    const roleCheck = await prisma.tbl_role.findFirst({
+        where: {
+            ur_role: role,
+        },
+    });
+    if (!user) throw new NotFoundError('User tidak ditemukan');
+    const result = await prisma.tbl_user_role.create({
+        data: {
+            id_user: user.id,
+            id_role: roleCheck.id,
+        },
+        select: {
+            id_user: true,
+            id_role: true,
         },
     });
     return result;
@@ -38,4 +78,5 @@ const getAllUser = async () => {
 module.exports = {
     createUser,
     getAllUser,
+    addRoleUser
 };
