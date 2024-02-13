@@ -11,10 +11,10 @@ const storageParticipant = multer.diskStorage({
 
 const storageSoal = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/uploads/soal');
+    cb(null, 'public/uploads/soal/');
   },
   filename: function (req, file, cb) {
-    cb(null, Math.floor(Math.random() * 99999999) + '-' + file.originalname);
+    cb(null, file.originalname);
   },
 });
 
@@ -36,12 +36,27 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+const fileFilterSoal = (req, file, cb) => {
+  if (
+    file.mimetype === 'text/csv' ||
+    file.mimetype === 'application/vnd.ms-excel' ||
+    file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  ) {
+    cb(null, true);
+  } else {
+    //reject file
+    cb(
+      {
+        message: 'Unsupported file format',
+      },
+      false
+    );
+  }
+};
+
 const uploadMiddlewareSoal = multer({
-  storageSoal,
-  limits: {
-    fileSize: 3000000,
-  },
-  fileFilter: fileFilter,
+  storage: storageSoal,
+  fileFilter: fileFilterSoal,
 });
 
 const uploadMiddlewareParticipant = multer({

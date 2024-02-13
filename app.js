@@ -15,6 +15,7 @@ const roleRouter = require('./app/api/v1/role/router');
 const participantRouter = require('./app/api/v1/participant/router');
 const tipesoalRouter = require('./app/api/v1/tipe-soal/router');
 const examRouter = require('./app/api/v1/exam/router');
+const soalQuestionRouter = require('./app/api/v1/question-option/router');
 
 const v1 = '/api/v1/cms'
 
@@ -40,6 +41,8 @@ app.use(v1, roleRouter);
 app.use(v1, participantRouter);
 app.use(v1, tipesoalRouter);
 app.use(v1, examRouter);
+app.use(v1, soalQuestionRouter);
+
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
