@@ -8,6 +8,12 @@ const { UnauthenticatedError } = require('../errors');
 
 const extractUserInfo = (req, res, next) => {
     const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+    if (!token) {
+        throw new UnauthenticatedError('Authentication invalid');
+    }
+    if (token)  {
+        isTokenValid({token})
+    }
     if (token) {
         try {
             
@@ -27,12 +33,7 @@ const extractUserInfo = (req, res, next) => {
 const logEvent = async (req, res, next) => {
     try {
         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
-        if (!token) {
-            throw new UnauthenticatedError('Authentication invalid');
-        }
-        if (token)  {
-            isTokenValid({token})
-        }
+        
         
         // Ambil informasi pengguna dari objek req
         const username  = req.body.username ? req.body.username : req?.user?.username;
