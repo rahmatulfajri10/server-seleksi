@@ -7,7 +7,7 @@ const { extractUserInfo, logEvent } = require('../../../middlewares/log-event');
 
 
 router.post('/soal', extractUserInfo, logEvent,authenticateUser, upload.uploadMiddlewareSoal.single('soal'), bulkInsertCSV)
-router.get('/soal', extractUserInfo, logEvent,authenticateUser, index);
+router.get('/soal/:kd_soal', extractUserInfo, logEvent,authenticateUser, index);
 
 
 

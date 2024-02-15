@@ -135,18 +135,20 @@ model tbl_option {
   url_foto    String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime?    @updatedAt
+  tbl_answer  tbl_answer[]
 }
 
 model tbl_answer {
-  id            Int          @id @default(autoincrement())
-  id_user       Int
-  user          tbl_user     @relation(fields: [id_user], references: [id])
-  kd_soal       String
-  kode_answer   tbl_exam     @relation(fields: [kd_soal], references: [kd_soal])
-  id_question   Int
-  quest         tbl_question @relation(fields: [id_question], references: [id])
-  user_response String
-  response_time DateTime     @default(now())
+  id                      Int          @id @default(autoincrement())
+  id_user                 Int
+  user                    tbl_user     @relation(fields: [id_user], references: [id])
+  kd_soal                 String
+  kode_answer             tbl_exam     @relation(fields: [kd_soal], references: [kd_soal])
+  id_question             Int
+  quest                   tbl_question @relation(fields: [id_question], references: [id])
+  id_option_user_response Int
+  user_response           tbl_option   @relation(fields: [id_option_user_response], references: [id])
+  response_time           DateTime     @default(now())
 }
 
 model tbl_result {

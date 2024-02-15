@@ -1,8 +1,15 @@
 const prisma = require('../../db/index')
 const { BadRequestError } = require('../../errors')
 
-const getAllSoal = async () => {
-    const result = await prisma.tbl_question.findMany()
+const getAllSoal = async (req) => {
+    const result = await prisma.tbl_question.findMany({
+        where: {
+            kd_soal: req.params.kd_soal,
+        },
+        include: {
+            tbl_options: true,
+        },
+    });
     return result;
 }
 
