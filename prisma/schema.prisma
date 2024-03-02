@@ -74,6 +74,7 @@ model tbl_participant {
   nama             String
   url_foto         String
   email            String
+  no_telp          String
   createdAt        DateTime  @default(now())
   updatedAt        DateTime? @updatedAt
 }
@@ -104,6 +105,7 @@ model tbl_exam {
   max_score      Int
   min_pass_score Int
   duration       Int
+  active         Int            @default(1)
   createdAt      DateTime       @default(now())
   updatedAt      DateTime?      @updatedAt
   tbl_answer     tbl_answer[]

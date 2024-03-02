@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express()
-const { signinCms, logout } = require('./controller');
-const {  logEvent } = require('../../../middlewares/log-event');
+const express = require("express");
+const router = express();
+const { signinCms, logout, me } = require("./controller");
+const { logEvent, extractUserInfo } = require("../../../middlewares/log-event");
 
-router.post('/login',logEvent, signinCms)
-router.post('/logout', logEvent, logout)
+router.post("/login", logEvent, signinCms);
+router.post("/logout", logout);
+router.post("/me", extractUserInfo, logEvent, me);
 
-module.exports = router;    
+module.exports = router;

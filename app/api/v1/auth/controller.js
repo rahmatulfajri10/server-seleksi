@@ -1,33 +1,45 @@
-const { signin } = require('../../../services/prisma/auth')
-const { StatusCodes } = require('http-status-codes');
+const { signin } = require("../../../services/prisma/auth");
+const { StatusCodes } = require("http-status-codes");
 
 const signinCms = async (req, res, next) => {
-    try {
-        const token = await signin(req);
-        res.status(StatusCodes.OK).json({
-            status: 'success',
-            data: token,
-        });
-    } catch (err) {
-        next(err);
-    }
-}
+  try {
+    const token = await signin(req);
+    res.status(StatusCodes.OK).json({
+      status: "success",
+      data: token,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 const logout = async (req, res, next) => {
-    try {
-        res.clearCookie('token').status(StatusCodes.OK).json({
-            status: 'success',
-            message: 'logout successfully',
-        });
-    } catch (err) {
-        res.status(StatusCodes.BAD_REQUEST).json({
-            status: 'error',
-            message: err.message,
-        });
-    }
-}
+  try {
+    res.clearCookie("token").status(StatusCodes.OK).json({
+      status: "success",
+      message: "logout successfully",
+    });
+  } catch (err) {
+    res.status(StatusCodes.BAD_REQUEST).json({
+      status: "error",
+      message: err.message,
+    });
+  }
+};
+
+const me = async (req, res, next) => {
+  try {
+    res.status(StatusCodes.OK).json({
+      status: "success",
+      data: req.user,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
-    signinCms,
-    logout
+  signinCms,
+  logout,
+  me,
 };
