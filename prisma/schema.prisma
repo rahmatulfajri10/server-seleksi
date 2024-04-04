@@ -27,6 +27,7 @@ model tbl_user {
   tbl_answers      tbl_answer[]
   tbl_user_roles   tbl_user_role[]
   tbl_participants tbl_participant[]
+  tbl_proctors tbl_proctor[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime?         @updatedAt
   tbl_result       tbl_result[]
@@ -64,20 +65,30 @@ model tbl_menu {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime?       @updatedAt
 }
-
+model tbl_grup {
+  id              Int               @id @default(autoincrement())
+  nama_grup       String
+  tbl_participant tbl_participant[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime?         @updatedAt
+}
 model tbl_participant {
-  id               Int       @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   id_user          Int
-  participant_user tbl_user  @relation(fields: [id_user], references: [id])
+  participant_user tbl_user @relation(fields: [id_user], references: [id])
   nik              String
   no_pendaftaran   String
   nama             String
   url_foto         String
   email            String
   no_telp          String
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime? @updatedAt
+  id_grup          Int?
+  grup      tbl_grup?  @relation(fields: [id_grup], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
+
+
 
 model tbl_log {
   id        Int      @id @default(autoincrement())
@@ -160,4 +171,13 @@ model tbl_result {
   kd_soal     String
   kode_answer tbl_exam @relation(fields: [kd_soal], references: [kd_soal])
   score       Int      @default(0)
+}
+
+model tbl_proctor {
+  id Int @id @default(autoincrement())
+  id_user Int
+  user        tbl_user @relation(fields: [id_user], references: [id])
+  kamera String
+  screen String
+  response_time DateTime     @default(now())
 }

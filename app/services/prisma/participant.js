@@ -62,7 +62,7 @@ const getOneParticipant = async (req) => {
   const { id } = req.params;
   const result = await prisma.tbl_participant.findFirst({
     where: {
-      id: parseInt(id),
+      id_user: parseInt(id),
     },
   });
   if (!result) throw new BadRequestError("Data tidak ditemukan");

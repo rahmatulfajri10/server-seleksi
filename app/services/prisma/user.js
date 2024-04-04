@@ -1,4 +1,4 @@
-const { hash } = require("bcryptjs");
+const { hash, hashSync } = require("bcryptjs");
 const prisma = require("../../db");
 const { BadRequestError, NotFoundError } = require("../../errors");
 
@@ -35,7 +35,11 @@ const getAllUser = async () => {
       active: true,
       tbl_user_roles: {
         select: {
-          id_role: true,
+          user_role: {
+            select: {
+              ur_role: true,
+            },
+          },
         },
       },
     },
@@ -45,7 +49,7 @@ const getAllUser = async () => {
     id: user.id,
     username: user.username,
     active: user.active,
-    role: user.tbl_user_roles.map((role) => role.id_role),
+    role: user.tbl_user_roles.map((role) => role.user_role.ur_role),
   }));
   return modifiedResult;
 };
@@ -76,8 +80,56 @@ const addRoleUser = async (req) => {
   return result;
 };
 
+const createBulk = (account) => {
+  const hashedPassword = hashSync(account.password, 12);
+  return prisma.tbl_user.create({
+    data: {
+      username: account.username,
+      password: hashedPassword,
+    },
+  });
+};
+
+const bulkInsertAccount = (accounts) => {
+  const insertPromises = accounts.map((account) => createBulk(account));
+  return prisma.$transaction(insertPromises);
+};
+
+const bulkInsertParticipant = async (participants) => {
+  const insertPromises = [];
+
+  for (const participant of participants) {
+    const user = await prisma.tbl_user.findUnique({
+      where: { username: participant.username },
+    });
+
+    const role = await prisma.tbl_role.findFirst({
+      where: { ur_role: participant.role },
+    });
+
+    if (!user || !role) {
+      throw new Error(
+        `User or role not found for participant: ${JSON.stringify(participant)}`
+      );
+    }
+
+    insertPromises.push(
+      prisma.tbl_user_role.create({
+        data: {
+          id_user: user.id,
+          id_role: role.id,
+        },
+      })
+    );
+  }
+
+  return prisma.$transaction(insertPromises);
+};
+
 module.exports = {
   createUser,
   getAllUser,
   addRoleUser,
+  bulkInsertAccount,
+  bulkInsertParticipant,
 };

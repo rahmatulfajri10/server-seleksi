@@ -10,7 +10,9 @@ router.post(
   extractUserInfo,
   logEvent,
   authenticateUser,
+
   upload.uploadMiddlewareParticipant.single("file"),
+
   create
 );
 router.get("/participant", extractUserInfo, logEvent, authenticateUser, index);
