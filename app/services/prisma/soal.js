@@ -29,4 +29,13 @@ const bulkInsert = async (data) => {
   return result;
 };
 
-module.exports = { getAllSoal, bulkInsert };
+const removeSoal = async (req) => {
+  const result = await prisma.tbl_question.delete({
+    where: {
+      kode: req.params.kd_soal,
+    },
+  });
+  return result;
+};
+
+module.exports = { getAllSoal, bulkInsert, removeSoal };

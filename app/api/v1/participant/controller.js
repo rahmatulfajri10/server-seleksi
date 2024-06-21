@@ -5,6 +5,7 @@ const {
   getAllParticipant,
   createParticipant,
   getOneParticipant,
+  countParticipant,
 } = require("../../../services/prisma/participant");
 
 const create = async (req, res, next) => {
@@ -44,6 +45,17 @@ const index = async (req, res, next) => {
   }
 };
 
+const count = async (req, res, next) => {
+  try {
+    const result = await countParticipant();
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getone = async (req, res, next) => {
   try {
     const result = await getOneParticipant(req);
@@ -59,4 +71,5 @@ module.exports = {
   create,
   index,
   getone,
+  count,
 };

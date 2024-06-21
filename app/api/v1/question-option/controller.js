@@ -1,13 +1,20 @@
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError } = require("../../../errors");
 
-const { getAllSoal, bulkInsert } = require("../../../services/prisma/soal");
+const {
+  getAllSoal,
+  bulkInsert,
+  removeSoal,
+} = require("../../../services/prisma/soal");
 const fs = require("fs");
 const csv = require("csv-parser");
 const path = require("path");
 
 const bulkInsertCSV = async (req, res) => {
+  const { kd_soal } = req.params;
+
   const data = [];
+
   const relativeFilePath = path.join(
     __dirname,
     "../../../../public/uploads/soal/",
@@ -21,7 +28,7 @@ const bulkInsertCSV = async (req, res) => {
 
       // Ubah row menjadi format yang sesuai dengan struktur tabel Anda
       const question = {
-        kd_soal: rowData[1],
+        kd_soal: kd_soal,
         soal: rowData[2],
         has_foto: parseInt(rowData[3]),
         url_foto: rowData[4],
@@ -77,6 +84,16 @@ const bulkInsertCSV = async (req, res) => {
     });
 };
 
+const remove = async (req, res, next) => {
+  try {
+    const result = await removeSoal(req);
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 const index = async (req, res, next) => {
   try {
     const result = await getAllSoal(req);
@@ -91,4 +108,5 @@ const index = async (req, res, next) => {
 module.exports = {
   bulkInsertCSV,
   index,
+  remove,
 };

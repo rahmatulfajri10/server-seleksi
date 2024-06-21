@@ -69,4 +69,14 @@ const getOneParticipant = async (req) => {
   return result;
 };
 
-module.exports = { getAllParticipant, createParticipant, getOneParticipant };
+const countParticipant = async () => {
+  const result = await prisma.tbl_participant.count();
+  return result;
+};
+
+module.exports = {
+  getAllParticipant,
+  createParticipant,
+  getOneParticipant,
+  countParticipant,
+};

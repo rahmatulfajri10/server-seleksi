@@ -7,6 +7,10 @@ const {
   addRoleUser,
   bulkInsertAccount,
   bulkInsertParticipant,
+  delRoleUser,
+  deleteUser,
+  updateStatusUser,
+  countUser,
 } = require("../../../services/prisma/user");
 const fs = require("fs");
 const csv = require("csv-parser");
@@ -45,10 +49,56 @@ const index = async (req, res, next) => {
   }
 };
 
+const count = async (req, res, next) => {
+  try {
+    const result = await countUser();
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const remove = async (req, res, next) => {
+  try {
+    const result = await deleteUser(req);
+    res.status(StatusCodes.ACCEPTED).json({
+      status: "success",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateStatus = async (req, res, next) => {
+  try {
+    const result = await updateStatusUser(req);
+    res.status(StatusCodes.ACCEPTED).json({
+      status: "success",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const addRole = async (req, res, next) => {
   try {
-    const { username, role } = req.body;
     const result = await addRoleUser(req);
+    res.status(StatusCodes.ACCEPTED).json({
+      status: "success",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const delRole = async (req, res, next) => {
+  try {
+    const result = await delRoleUser(req);
     res.status(StatusCodes.ACCEPTED).json({
       status: "success",
       data: result,
@@ -103,4 +153,8 @@ module.exports = {
   index,
   addRole,
   bulkInsertCSV,
+  delRole,
+  remove,
+  updateStatus,
+  count,
 };
