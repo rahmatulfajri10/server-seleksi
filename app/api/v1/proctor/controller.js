@@ -58,7 +58,6 @@ const getProctorData = async (req, res) => {
         no_telp: true,
       },
     });
-    // console.log("participant:", participants);
     const combinedData = proctorUser.map((proctor) => {
       const participant = participants.find(
         (part) => part.id_user === proctor.id_user
@@ -69,30 +68,30 @@ const getProctorData = async (req, res) => {
       };
     });
 
-    // console.log(combinedData);
     const participantMap = participants.reduce((acc, participant) => {
       acc[participant.id_user] = participant.nama;
       return acc;
     }, {});
-    // console.log("Participant map:", participantMap);
-
-    // const dataWithCount = proctorData.reduce((acc, curr) => {
-    //   const existingUser = acc.find((item) => item.id_user === curr.id_user);
-    //   if (existingUser) {
-    //     existingUser.count++;
-    //     existingUser.details.push({ kamera: curr.kamera, screen: curr.screen });
-    //   } else {
-    //     acc.push({
-    //       id_user: curr.id_user,
-    //       nama: participantMap[curr.id_user] || "Unknown",
-    //       count: 1,
-    //       details: [{ kamera: curr.kamera, screen: curr.screen }],
-    //     });
-    //   }
-    //   return acc;
-    // }, []);
 
     res.status(200).json(combinedData);
+  } catch (error) {
+    console.error("Error fetching proctor data:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getProctorbyId = async (req, res) => {
+  const { id_user } = req.params;
+  try {
+    const proctorData = await prisma.tbl_proctor.findMany({
+      where: {
+        id_user: parseInt(id_user),
+      },
+      orderBy: {
+        response_time: "desc", // Ganti 'createdAt' dengan nama field yang sesuai di tabel Anda
+      },
+    });
+    res.status(200).json(proctorData);
   } catch (error) {
     console.error("Error fetching proctor data:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -102,4 +101,5 @@ const getProctorData = async (req, res) => {
 module.exports = {
   create,
   getProctorData,
+  getProctorbyId,
 };

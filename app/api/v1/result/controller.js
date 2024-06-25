@@ -4,6 +4,8 @@ const {
   createResult,
   getAllResult,
   countResult,
+  getOneResult,
+  getResultParticipant,
 } = require("../../../services/prisma/result");
 const validateResult = require("./model");
 
@@ -37,9 +39,20 @@ const index = async (req, res, next) => {
     next(err);
   }
 };
+const indexOne = async (req, res, next) => {
+  try {
+    const result = await getOneResult(req);
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 const count = async (req, res, next) => {
   try {
     const result = await countResult();
+
     res.status(StatusCodes.OK).json({
       data: result,
     });
@@ -48,4 +61,16 @@ const count = async (req, res, next) => {
   }
 };
 
-module.exports = { index, create, count };
+const getP = async (req, res, next) => {
+  try {
+    const result = await getResultParticipant(req);
+
+    res.status(StatusCodes.OK).json({
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { index, create, count, indexOne, getP };

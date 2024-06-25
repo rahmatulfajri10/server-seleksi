@@ -46,6 +46,11 @@ const getAllResult = async () => {
           username: true,
         },
       },
+      kode_answer: {
+        select: {
+          nama: true,
+        },
+      },
     },
   });
 
@@ -67,11 +72,61 @@ const getAllResult = async () => {
 
 const countResult = async () => {
   const result = await prisma.tbl_result.count();
+
   return result;
+};
+
+const getOneResult = async (req) => {
+  const { kd_soal } = req.params;
+  // Dapatkan semua hasil
+  const results = await prisma.tbl_result.findMany({
+    where: {
+      kd_soal: kd_soal,
+    },
+    include: {
+      user: {
+        select: {
+          username: true,
+        },
+      },
+      kode_answer: {
+        select: {
+          nama: true,
+        },
+      },
+    },
+  });
+
+  // Dapatkan semua partisipan
+  const participants = await prisma.tbl_participant.findMany();
+
+  // Gabungkan hasil dan partisipan berdasarkan id_user
+  const combined = results.map((result) => {
+    const participant = participants.find(
+      (participant) => participant.id_user === result.id_user
+    );
+    return {
+      ...result,
+      participant,
+    };
+  });
+  return combined;
+};
+
+const getResultParticipant = async (req) => {
+  const { id_user } = req.params;
+  const results = await prisma.tbl_result.findMany({
+    where: {
+      id_user: parseInt(id_user, 10),
+    },
+  });
+  return results;
 };
 
 module.exports = {
   createResult,
   getAllResult,
   countResult,
+  getOneResult,
+  getResultParticipant,
 };
