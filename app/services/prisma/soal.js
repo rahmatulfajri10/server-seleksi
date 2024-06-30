@@ -8,6 +8,11 @@ const getAllSoal = async (req) => {
     },
     include: {
       tbl_options: true,
+      kode: {
+        select: {
+          end_time: true, // Hanya mengambil end_time dari tbl_exam
+        },
+      },
     },
   });
   return result;
